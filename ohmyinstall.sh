@@ -21,8 +21,8 @@ vim -c :PlugInstall -c :qa
 
 ln -sfv ~/develconfig/zshrc ~/.oh-my-zsh/custom/ohmyzshrc.zsh 
 mkdir -p ~/.oh-my-zsh/custom/themes
-ln -sfv ~/develconfig/newro_vcs.zsh-theme ~/.oh-my-zsh/custom/themes/newro_vcs.zsh-theme
-sed -i 's/robbyrussell/newro_vcs/g' ~/.zshrc
+ln -sfv ~/develconfig/custom_vcs.zsh-theme ~/.oh-my-zsh/custom/themes/custom_vcs.zsh-theme
+sed -i 's/robbyrussell/custom_vcs/g' ~/.zshrc
 sed -i 's/^# DISABLE_UNTRACKED_FILES_DIRTY/DISABLE_UNTRACKED_FILES_DIRTY/g' ~/.zshrc
 sed -i 's/^# HIST_STAMPS/HIST_STAMPS/g' ~/.zshrc
 sed -i '54s/^/export _Z_NO_RESOLVE_SYMLINKS="1"\n/' ~/.zshrc
