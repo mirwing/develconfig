@@ -19,6 +19,9 @@ call vundle#rc()
 
 " let Vundle manage Vundle
 " required! 
+Bundle 'VundleVim/Vundle.vim'
+Bundle 'fatih/vim-go'
+
 Bundle 'gmarik/vundle'
 Bundle 'snipMate'
 Bundle 'The-NERD-tree'
@@ -136,11 +139,16 @@ filetype plugin indent on     " required!
 "====================================================
 au BufRead,BufNewFile *.S		set ft=c
 au! BufNewFile,BufRead /var/log/xcat/*	set filetype=xcat
+au Bufenter *.\(c\|cpp\h\|java\|mk\) set et " tab -> space
 
 "====================================================
 "= 기본 설정
 "====================================================
 set cindent			"들여쓰기 설정
+set smartindent
+set autoindent
+set nowrap
+set ff=unix
 set ruler			" 화면 우측 하단에 현재 커서의 위치(줄,칸)를 보여준다.
 set number			" 줄번호 출력
 set modifiable
@@ -159,6 +167,8 @@ noremap <silent> <F10> :set number!<CR>
 imap <silent> <F10> <c-o>:set number!<CR>
 set foldmethod=indent
 set nofoldenable
+set backspace=eol,start,indent
+set history=1000
 
 "====================================================
 "= 칼라 설정
@@ -182,6 +192,19 @@ autocmd BufEnter *.js       setlocal ts=4 sw=4 sts=4 nocindent
 autocmd BufEnter *.debug    setlocal cursorline
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType java set omnifunc=javacomplete#Complete
+if has("autocmd") && exists("+omnifunc")
+         autocmd Filetype *
+            \ if &omnifunc == "" |
+            \   setlocal omnifunc=syntaxcomplete#Complete |
+            \ endif
 endif
 
 "====================================================
