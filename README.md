@@ -60,7 +60,7 @@ tmux,screen / zsh / vim / git 환경 설정 프로젝트.
 | ,h         | Hex Mode View Toggle                                            |
 
 
-# Custom tmux 단축키 설명 (PREFIX : Ctrl + O)
+# Custom tmux 단축키 설명 (PREFIX : Ctrl + Q)
 
 |    이름    |            내용                                                 |
 | ---------- | --------------------------------------------------------------- |
