@@ -1,159 +1,116 @@
-#!/bin/zsh
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="/Users/mirwing/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to automatically update without prompting.
+# DISABLE_UPDATE_PROMPT="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git zsh-syntax-highlighting docker)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
 #
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias emacs="emacs -nw"
+alias em="emacs"
+alias sudo='sudo '
 
-# Zsh funciton
-#
-precmd () {
-if [[ "$TERM" = "screen" || "$TERM" = "xterm-color" ]]; then
-local SHORTPWD="`basename $PWD`"
-local HOMEDIR="`basename $HOME`"
-if [[ "${SHORTPWD}" = "${HOMEDIR}" ]]; then
-SHORTPWD="~"
-fi
-if [[ -n "$TMUX" ]]; then
-tmux setenv TMUXPWD_$(tmux display -p "#I") $PWD
-fi
-echo -ne "\ek${SHORTPWD}/\e\\"
-fi
-}
-preexec () {
-if [[ "$TERM" = "screen" || "$TERM" = "xterm-color" ]]; then
-local CMD="${1}"
-if [[ "${${(z)CMD}[1]}" = "vi" ]]; then
-CMD="${${(z)CMD}[2]}"
-fi
-if [[ ${#CMD} -ge 20 ]]; then
-CMD="${${(z)CMD}[1]}${${(z)CMD}[2]}${${(z)CMD}[3]} _"
-fi
-echo -ne "\ek${CMD}\e\\"
-fi
-}
+export GOROOT=/Users/mirwing/Workspace/Library/go
+export GOROOT_BOOTSTRAP=/Users/mirwing/Workspace/Library/go1.4
+export PATH=$GOROOT/bin:$PATH
 
-_greps () {
-if [[ "${2}" = "" ]]; then
-    echo "gr pattern file"
-else
-    echo "find . -name \"${2}\" -exec grep --color=auto -nH${3} \"${1}\" {} \;"
-    eval "find . -name \"${2}\" -exec grep --color=auto -nH${3} \"${1}\" {} \;"
-fi
-}
-
-greps () {
-if [[ "${1}" = "i" ]]; then
-    _greps ${2} ${3} ${1}
-else
-    _greps ${1} ${2}
-fi
-}
-
-seds () {
-if [[ "${3}" = "" ]]; then
-    echo "se org dst file"
-else
-    eval "find . -name \"${3}\" -exec sed -i 's/${1}/${2}/g' {} \;"
-fi
-}
-
-slog () {
-if [[ "${1}" = "" ]]; then
-    echo "slog number [file]"
-elif [[ "${2}" = "" ]]; then
-    DATE=`date +%F --date "${1} days ago"`
-    svn log -r HEAD:{$DATE} -v
-else
-    DATE=`date +%F --date "${1} days ago"`
-    svn log -r HEAD:{$DATE} -v ${2}
-fi
-}
-
-mytail() {
-if [[ "${1}" = "-F" ]]; then
-    echo "tail ${1} ${2} | awk -f ~/develconfig/colorawk"
-    tail ${1} ${2} | awk -f ~/develconfig/colorawk
-else
-    echo "tail -F ${1} | awk -f ~/develconfig/colorawk"
-    tail -F ${1} | awk -f ~/develconfig/colorawk
-fi
-}
-
-ps-right-toggle () {
-    if [[ "${PS_RIGHT}" = "detail" ]]; then
-        export PS_RIGHT="compact"
-    elif [[ "${PS_RIGHT}" = "compact" ]]; then
-        export PS_RIGHT="noinfo"
-    else
-        export PS_RIGHT="detail"
-    fi
-}
-
-zle -N ps-right-toggle
-
-# Default rc loading
-#
-if [ -f /etc/zshrc ]; then
-    . /etc/zshrc
-fi
-
-# Zsh environment
-#
-HISTSIZE=100000
-SAVEHIST=10000
-HISTFILE=~/.zsh/history
-setopt append_history
-setopt inc_append_history
-setopt extended_history
-setopt hist_find_no_dups
-setopt hist_ignore_all_dups
-setopt hist_reduce_blanks
-setopt hist_ignore_space
-setopt hist_no_store
-setopt hist_no_functions
-setopt no_hist_beep
-setopt hist_save_no_dups
-bindkey "^[[24~" 'ps-right-toggle'
-
-
-# Alias
-#
-alias gr='noglob greps'
-alias gri='noglob greps i'
-alias se='noglob seds'
-alias vi='vim -T xterm-color -u ~/.vimrc'
-alias history='history -i -1000'
-alias slog='slog'
-alias cpanplus='perl -MCPAN -eshell'
-alias ctail='noglob mytail'
-alias cscope="cd ~/xcat;ctags --sort=foldcase --regex-perl='/^[ \t]*method[ \t]+([^\ \t;\(]+)/\1/m,method,methods/' -R ~/xcat;cd -"
-
-# Bind
-#
-if [ -d ~/.oh-my-zsh ]; then
-bindkey "^[[A" history-substring-search-up
-bindkey "^[[B" history-substring-search-down
-alias c=z
-fi
-
-# export
-#
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib64:/lib:/usr/lib64:/usr/lib:/usr/local/lib64:/usr/local/lib:/usr/X11R6/lib64:/usr/X11R6/lib
-
-export LEIN_ROOT=1
-export ERLANG=/opt/erlang/bin
-export HEROKU=/usr/local/heroku/bin
-export GIT_SSL_NO_VERIFY=true
-export TERM=xterm-color
-export PS_RIGHT=detail # detail / compact / noinfo
-
-PATH=.:$PATH:/bin:/usr/bin:/usr/local/bin:$HOME:$ERLANG:$CLOJURE:$HEROKU
-export PATH
-
-export SVNEDITOR=vi
-
-if [[ "$PWD" =~ "^\/root$" || "$PWD" =~ "^$HOME$" ]]; then
-    cd ~
-fi
-
-if [ -f ~/.zshrc.local ]; then
-    . ~/.zshrc.local
-fi
-
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
