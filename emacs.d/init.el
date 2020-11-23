@@ -31,8 +31,7 @@
  '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   (quote
-    (go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go direx auto-complete vimgolf golint go-autocomplete go-complete go-mode)))
+   '(yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go direx auto-complete vimgolf golint go-autocomplete go-complete go-mode))
  '(show-paren-mode t)
  '(size-indication-mode t))
 
