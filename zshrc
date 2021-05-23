@@ -75,7 +75,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting docker)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions docker)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -108,9 +108,13 @@ alias emacs="emacs -nw"
 alias em="emacs"
 alias sudo='sudo '
 
+export FLUTTERPATH=/Users/mirwing/Workspace/Library/flutter
+export PATH=$PATH:$FLUTTERPATH/bin
+
 export GOROOT=/Users/mirwing/Workspace/Library/go
+export GOPATH=/Users/mirwing/Workspace/go
 export GOROOT_BOOTSTRAP=/Users/mirwing/Workspace/Library/go1.4
-export PATH=$GOROOT/bin:$PATH
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
