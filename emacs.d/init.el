@@ -31,7 +31,7 @@
  '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go direx auto-complete vimgolf golint go-autocomplete go-complete go-mode))
+   '(posframe lsp-dart js2-mode go-autocomplete auto-compile typescript-mode yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go direx auto-complete vimgolf golint go-complete go-mode))
  '(show-paren-mode t)
  '(size-indication-mode t))
 
@@ -83,3 +83,21 @@
                               "go build -v && go test -v && go vet")
                          (local-set-key (kbd "C-c C-l") 'compile)))
 (put 'downcase-region 'disabled nil)
+
+(defun my-c-mode-common-hook ()
+  (c-set-offset 'substatement-open 0)
+
+  (setq c++-tab-always-indent t)
+  (setq c-basic-offset 4)                  ;; Default is 2
+  (setq c-indent-level 4)                  ;; Default is 2
+
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+  (setq tab-width 4)
+  (setq indent-tabs-mode t)  ; use spaces only if nil
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(setq js-indent-level 2)
+
+(require 'typescript-mode)
+(setq typescript-indent-level 2)
