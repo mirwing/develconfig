@@ -111,6 +111,9 @@ alias sudo='sudo '
 export FLUTTERPATH=/Users/mirwing/Workspace/Library/flutter
 export PATH=$PATH:$FLUTTERPATH/bin
 
+export ANDROID_HOME=/Users/mirwing/Workspace/Library/Android/sdk
+export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+
 export GOROOT=/Users/mirwing/Workspace/Library/go
 export GOPATH=/Users/mirwing/Workspace/go
 export GOROOT_BOOTSTRAP=/Users/mirwing/Workspace/Library/go1.4
