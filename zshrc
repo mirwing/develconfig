@@ -9,7 +9,8 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/mirwing/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
+export WORKSPACE="$HOME/Workspace"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -104,20 +105,21 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias emacs="emacs -nw"
-alias em="emacs"
+alias em="emacs -nw"
 alias sudo='sudo '
 
-export FLUTTERPATH=/Users/mirwing/Workspace/Library/flutter
+export FLUTTERPATH=$HOME/Library/flutter
 export PATH=$PATH:$FLUTTERPATH/bin
 
-export ANDROID_HOME=/Users/mirwing/Workspace/Library/Android/sdk
+export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
 
-export GOROOT=/Users/mirwing/Workspace/Library/go
-export GOPATH=/Users/mirwing/Workspace/go
-export GOROOT_BOOTSTRAP=/Users/mirwing/Workspace/Library/go1.4
+export GOROOT=$HOME/Library/go
+export GOPATH=$WORKSPACE/go
+export GOROOT_BOOTSTRAP=$HOME/Library/go-bootstrap
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+
+export PATH=$PATH:/opt/local/bin
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
