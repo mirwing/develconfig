@@ -108,6 +108,9 @@ source $ZSH/oh-my-zsh.sh
 alias em="emacs -nw"
 alias sudo='sudo '
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 export FLUTTERPATH=$HOME/Library/flutter
 export PATH=$PATH:$FLUTTERPATH/bin
 
@@ -117,12 +120,7 @@ export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
 export GOROOT=$HOME/Library/go
 export GOPATH=$WORKSPACE/go
 export GOROOT_BOOTSTRAP=$HOME/Library/go-bootstrap
-export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
-
-export PATH=$PATH:/opt/local/bin
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH:/opt/local/bin
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/mirwing/Workspace/Library/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mirwing/Workspace/Library/google-cloud-sdk/path.zsh.inc'; fi
