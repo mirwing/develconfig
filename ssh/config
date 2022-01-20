@@ -1,0 +1,5 @@
+Host github.com
+     IdentityFile ~/.ssh/id_ed25519
+Host github.hexaveil
+     HostName github.com
+     IdentityFile ~/.ssh/id_rsa
