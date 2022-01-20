@@ -1,3 +1,4 @@
+ln -sfv $PWD/ssh ~/.ssh
 ln -sfv $PWD/emacs.d ~/.emacs.d
 ln -sfv $PWD/oh-my-zsh ~/.oh-my-zsh
 ln -sfv $PWD/p10k.zsh ~/.p10k.zsh
