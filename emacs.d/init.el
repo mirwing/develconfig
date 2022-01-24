@@ -6,18 +6,19 @@
    t)
   (package-initialize))
 
-(unless (package-installed-p 'cyberpunk-theme)
-  (package-install 'cyberpunk-theme))
-(require 'cyberpunk-theme)
-(load-theme 'cyberpunk t)
-
 (setq backup-inhibited t)
 (setq auto-save-default nil)
 (setq make-backup-files nil)
 (setq create-lockfiles nil)
+;; tab => space (4)
 (setq-default indent-tabs-mode nil)
-
+(setq-default tab-width 4)
+;; auto reload file
 (global-auto-revert-mode t)
+;; buffer open same window
+(global-set-key "\C-x\C-b" 'buffer-menu)
+;; find file
+(ido-mode)
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 (setq vc-follow-symlinks nil)
@@ -31,7 +32,7 @@
  '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(posframe lsp-dart js2-mode go-autocomplete auto-compile typescript-mode yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go direx auto-complete vimgolf golint go-complete go-mode))
+   '(swiper lsp-mode doom-modeline helm rjsx-mode flycheck-kotlin posframe lsp-dart js2-mode go-autocomplete typescript-mode yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go auto-complete vimgolf golint go-complete go-mode))
  '(show-paren-mode t)
  '(size-indication-mode t))
 
@@ -41,6 +42,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
+(require 'cyberpunk-theme)
+(load-theme 'cyberpunk t)
 
 (require 'helm-config)
 (helm-mode 1)
@@ -100,4 +108,14 @@
 (setq js-indent-level 2)
 
 (require 'typescript-mode)
-(setq typescript-indent-level 2)
+(use-package typescript-mode
+  :ensure t
+  :config
+  (setq typescript-indent-level 2)
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . rjsx-mode)))
+
+(require 'rjsx-mode)
+(use-package rjsx-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . rjsx-mode)))
