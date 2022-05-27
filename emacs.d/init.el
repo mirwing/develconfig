@@ -23,6 +23,14 @@
 (setq show-paren-delay 0)
 (setq vc-follow-symlinks nil)
 
+(set-language-environment "Korean")
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+(setq default-input-method "korean-hangul")
+(global-set-key (kbd "C-SPC") `toggle-input-method)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
