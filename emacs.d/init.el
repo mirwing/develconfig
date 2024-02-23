@@ -40,9 +40,10 @@
  '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(swiper lsp-mode doom-modeline helm rjsx-mode flycheck-kotlin posframe lsp-dart js2-mode go-autocomplete typescript-mode yaml-mode go-eldoc kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go auto-complete vimgolf golint go-complete go-mode))
+   '(web-mode go-eldoc swiper lsp-mode doom-modeline helm rjsx-mode flycheck-kotlin posframe lsp-dart js2-mode go-autocomplete typescript-mode yaml-mode kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go auto-complete vimgolf golint go-complete go-mode))
  '(show-paren-mode t)
- '(size-indication-mode t))
+ '(size-indication-mode t)
+ '(warning-suppress-types '((comp))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -51,14 +52,14 @@
  ;; If there is more than one, they won't work right.
  )
 
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
+;;(use-package doom-modeline
+;;  :ensure t
+;;  :hook (after-init . doom-modeline-mode))
 
 (require 'cyberpunk-theme)
 (load-theme 'cyberpunk t)
 
-(require 'helm-config)
+(require 'helm)
 (helm-mode 1)
 
 (require 'direx)
@@ -114,6 +115,12 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (setq js-indent-level 2)
+
+(require 'web-mode)
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
 (require 'typescript-mode)
 (use-package typescript-mode
