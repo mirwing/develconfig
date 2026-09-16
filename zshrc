@@ -105,25 +105,82 @@ export LANG=ko_KR.UTF-8
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias em="emacs -nw"
+# -------------------------------------------------------------------
+# Aliases
+# -------------------------------------------------------------------
 alias sudo='sudo '
+alias reload='source ~/.zshrc'
+
+# --- eza (Modern ls replacement) ---
+if (( $+commands[eza] )); then
+  alias ls='eza'
+  alias l='eza -lF'
+  alias ll='eza -la --git'
+  alias la='eza -a'
+  alias lt='eza --tree --level=2'
+  alias lta='eza --tree'
+  alias lm='eza -l --sort=modified'
+  alias lS='eza -l --sort=size'
+else
+  alias ls='ls -G'
+  alias ll='ls -lh'
+  alias la='ls -lah'
+fi
+
+# --- tmux (한글/UTF-8 와이드 문자 깨짐 방지 -u 옵션 추가) ---
+alias tmux='tmux -u'
+alias tma='tmux -u attach -t'
+alias tml='tmux -u ls'
+alias tmn='tmux -u new -s'
+alias tmk='tmux kill-session -t'
+
+# --- emacs / emacs 31 (-nw 모드 전용) ---
+alias em='emacs -nw'
+alias emacs='emacs -nw'
+alias ec='emacsclient -t'
+alias emacs-daemon='emacs --daemon'
+alias emacs-kill='emacsclient -e "(kill-emacs)"'
+
+# --- Navigation & Utilities ---
+alias path='echo -e ${PATH//:/\\n}'
+alias ports='lsof -iTCP -sTCP:LISTEN -P -n'
+alias fix-nfd="python3 -c \"import os, unicodedata; [os.rename(os.path.join(r, n), os.path.join(r, unicodedata.normalize('NFC', n))) or print('변환:', unicodedata.normalize('NFC', n)) for r, ds, fs in os.walk('.', topdown=False) for n in fs + ds if n != unicodedata.normalize('NFC', n)]\""
+
+# -------------------------------------------------------------------
+# Environment & PATH Configuration
+# -------------------------------------------------------------------
+# Prevent duplicate PATH entries
+typeset -U path PATH
+
+export FLUTTERPATH="$HOME/Workspace/mirwing/flutter"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export GOROOT="$HOME/Library/go"
+export GOPATH="$WORKSPACE/go"
+export GOROOT_BOOTSTRAP="$HOME/Library/go-bootstrap"
+
+# Priority PATH: Local user bins -> MacPorts -> Toolchains -> System
+path=(
+  "$HOME/.local/bin"
+  /opt/local/bin
+  /opt/local/sbin
+  "$GOROOT/bin"
+  "$GOPATH/bin"
+  "$FLUTTERPATH/bin"
+  "$ANDROID_HOME/platform-tools"
+  "$ANDROID_HOME/tools"
+  $path
+)
+export PATH
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export FLUTTERPATH=$HOME/Library/flutter
-export PATH=$PATH:$FLUTTERPATH/bin
+# Google Cloud SDK (if installed)
+if [ -f "$WORKSPACE/Library/google-cloud-sdk/path.zsh.inc" ]; then
+  . "$WORKSPACE/Library/google-cloud-sdk/path.zsh.inc"
+fi
+if [ -f "$WORKSPACE/Library/google-cloud-sdk/completion.zsh.inc" ]; then
+  . "$WORKSPACE/Library/google-cloud-sdk/completion.zsh.inc"
+fi
 
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
 
-export GOROOT=$HOME/Library/go
-export GOPATH=$WORKSPACE/go
-export GOROOT_BOOTSTRAP=$HOME/Library/go-bootstrap
-export PATH=$GOROOT/bin:$GOPATH/bin:$PATH:/opt/local/bin
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/mirwing/Workspace/Library/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mirwing/Workspace/Library/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/mirwing/Workspace/Library/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mirwing/Workspace/Library/google-cloud-sdk/completion.zsh.inc'; fi
