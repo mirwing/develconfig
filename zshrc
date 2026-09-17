@@ -129,10 +129,17 @@ fi
 
 # --- tmux (한글/UTF-8 와이드 문자 깨짐 방지 -u 옵션 추가) ---
 alias tmux='tmux -u'
-alias tma='tmux -u attach -t'
 alias tml='tmux -u ls'
-alias tmn='tmux -u new -s'
 alias tmk='tmux kill-session -t'
+
+# 세션이 있으면 attach, 없으면 새로 생성 후 진입
+tma() {
+  if [ -n "$1" ]; then
+    tmux -u new-session -A -s "$1"
+  else
+    tmux -u attach 2>/dev/null || tmux -u new-session
+  fi
+}
 
 # --- emacs / emacs 31 (-nw 모드 전용) ---
 alias em='emacs -nw'
