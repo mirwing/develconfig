@@ -95,7 +95,7 @@
  '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(cyberpunk-theme web-mode go-eldoc swiper lsp-mode doom-modeline helm rjsx-mode flycheck-kotlin posframe lsp-dart js2-mode go-autocomplete typescript-mode yaml-mode kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go auto-complete vimgolf golint go-complete go-mode direx anaconda-mode))
+   '(cyberpunk-theme web-mode go-eldoc swiper lsp-mode doom-modeline helm rjsx-mode flycheck-kotlin posframe lsp-dart js2-mode go-autocomplete typescript-mode yaml-mode kotlin-mode rainbow-delimiters flycheck-golangci-lint flycheck company-go auto-complete vimgolf golint go-complete go-mode treemacs anaconda-mode))
  '(show-paren-mode t)
  '(size-indication-mode t)
  '(warning-suppress-types '((comp) (files))))
@@ -122,9 +122,52 @@
 (when (require 'helm nil t)
   (helm-mode 1))
 
-(ensure-package-installed 'direx)
-(when (require 'direx nil t)
-  (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory))
+(ensure-package-installed 'treemacs)
+(when (require 'treemacs nil t)
+  (setq treemacs-width 30
+        treemacs-indentation 2
+        treemacs-follow-after-init t
+        treemacs-recenter-after-file-follow t
+        treemacs-silent-refresh t
+        treemacs-sorting 'alphabetic-asc)
+
+  ;; 심볼릭 링크 및 프로젝트 자동 감지/등록을 지원하는 스마트 점프 함수
+  (defun my-treemacs-jump ()
+    "현재 버퍼의 파일을 Treemacs에서 찾아 포커스합니다.
+심볼릭 링크를 자동 해석하고, 워크스페이스에 프로젝트가 없으면 자동으로 등록합니다.
+이미 Treemacs 창에 있을 때는 이전 편집 창으로 돌아갑니다."
+    (interactive)
+    (if (and (fboundp 'treemacs-is-treemacs-window?)
+             (treemacs-is-treemacs-window? (selected-window)))
+        (select-window (get-mru-window nil nil t))
+      (let* ((raw-file (buffer-file-name (buffer-base-buffer)))
+             (file (when raw-file (file-truename raw-file))))
+        (unless (treemacs-current-workspace)
+          (treemacs--find-workspace))
+        (if (not file)
+            (treemacs-select-window)
+          (let ((project (or (treemacs--find-project-for-path file)
+                             (when raw-file (treemacs--find-project-for-path raw-file)))))
+            (unless project
+              (let* ((root (or (locate-dominating-file file ".git")
+                               (ignore-errors (project-root (project-current nil (file-name-directory file))))
+                               (file-name-directory file)))
+                     (canonical-root (treemacs-canonical-path root))
+                     (name (file-name-nondirectory (directory-file-name canonical-root))))
+                (treemacs-do-add-project-to-workspace canonical-root name)
+                (setq project (or (treemacs--find-project-for-path file)
+                                  (treemacs--find-project-for-path raw-file)))))
+            (pcase (treemacs-current-visibility)
+              ('visible (treemacs--select-visible-window))
+              ('exists  (treemacs--select-not-visible-window))
+              ('none    (treemacs--init)))
+            (when project
+              (treemacs-goto-file-node (if (treemacs--find-project-for-path file) file raw-file) project)
+              (treemacs-select-window)))))))
+
+  (global-set-key (kbd "C-x C-j") 'my-treemacs-jump)
+  (global-set-key (kbd "M-0") 'treemacs-select-window)
+  (global-set-key (kbd "C-c t t") 'treemacs))
 
 (ensure-package-installed 'auto-complete)
 (when (require 'auto-complete nil t)
