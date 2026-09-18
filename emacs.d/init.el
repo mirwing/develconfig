@@ -129,41 +129,57 @@
         treemacs-follow-after-init t
         treemacs-recenter-after-file-follow t
         treemacs-silent-refresh t
-        treemacs-sorting 'alphabetic-asc)
+        treemacs-sorting 'alphabetic-asc
+        treemacs-persist-file nil)
 
-  ;; 심볼릭 링크 및 프로젝트 자동 감지/등록을 지원하는 스마트 점프 함수
+  ;; 실행 위치(default-directory) 또는 현재 파일의 Git 루트를 워크스페이스로 잡고 창으로 포커스
   (defun my-treemacs-jump ()
-    "현재 버퍼의 파일을 Treemacs에서 찾아 포커스합니다.
-심볼릭 링크를 자동 해석하고, 워크스페이스에 프로젝트가 없으면 자동으로 등록합니다.
-이미 Treemacs 창에 있을 때는 이전 편집 창으로 돌아갑니다."
+    "현재 버퍼의 파일 또는 Emacs 실행 위치를 Treemacs에서 찾아 창을 열고 포커스합니다.
+이미 Treemacs 창에 있을 때는 창을 닫습니다."
     (interactive)
     (if (and (fboundp 'treemacs-is-treemacs-window?)
              (treemacs-is-treemacs-window? (selected-window)))
-        (select-window (get-mru-window nil nil t))
+        (treemacs-quit)
       (let* ((raw-file (buffer-file-name (buffer-base-buffer)))
-             (file (when raw-file (file-truename raw-file))))
+             (file (when raw-file (file-truename raw-file)))
+             (target-dir (file-truename (if file
+                                            (file-name-directory file)
+                                          default-directory)))
+             (root (or (locate-dominating-file target-dir ".git")
+                       (ignore-errors (project-root (project-current nil target-dir)))
+                       target-dir))
+             (canonical-root (treemacs-canonical-path root))
+             (name (file-name-nondirectory (directory-file-name canonical-root))))
         (unless (treemacs-current-workspace)
           (treemacs--find-workspace))
-        (if (not file)
-            (treemacs-select-window)
-          (let ((project (or (treemacs--find-project-for-path file)
-                             (when raw-file (treemacs--find-project-for-path raw-file)))))
-            (unless project
-              (let* ((root (or (locate-dominating-file file ".git")
-                               (ignore-errors (project-root (project-current nil (file-name-directory file))))
-                               (file-name-directory file)))
-                     (canonical-root (treemacs-canonical-path root))
-                     (name (file-name-nondirectory (directory-file-name canonical-root))))
-                (treemacs-do-add-project-to-workspace canonical-root name)
-                (setq project (or (treemacs--find-project-for-path file)
-                                  (treemacs--find-project-for-path raw-file)))))
-            (pcase (treemacs-current-visibility)
-              ('visible (treemacs--select-visible-window))
-              ('exists  (treemacs--select-not-visible-window))
-              ('none    (treemacs--init)))
-            (when project
-              (treemacs-goto-file-node (if (treemacs--find-project-for-path file) file raw-file) project)
-              (treemacs-select-window)))))))
+        (let ((project (or (treemacs--find-project-for-path canonical-root)
+                           (when file (treemacs--find-project-for-path file)))))
+          (unless project
+            (treemacs-do-add-project-to-workspace canonical-root name)
+            (setq project (or (treemacs--find-project-for-path canonical-root)
+                              (when file (treemacs--find-project-for-path file)))))
+          (pcase (treemacs-current-visibility)
+            ('visible (treemacs--select-visible-window))
+            ('exists  (treemacs--select-not-visible-window))
+            ('none    (treemacs--init)))
+          (treemacs-select-window)
+          (when (and file (file-exists-p file) project)
+            (ignore-errors (treemacs-goto-file-node file project)))
+          (treemacs-select-window)))))
+
+  ;; 파일 선택(RET) 시 파일을 열고 Treemacs 창을 자동으로 닫기 (디렉터리는 펼침 유지)
+  (with-eval-after-load 'treemacs
+    (define-key treemacs-mode-map (kbd "RET")
+      (lambda ()
+        (interactive)
+        (let ((btn (treemacs-current-button)))
+          (if (and btn (memq (treemacs-button-get btn :type) '(file tag tag-node tag-leaf)))
+              (progn
+                (treemacs-visit-node-default)
+                (treemacs-quit))
+            (treemacs-RET-action)))))
+    (define-key treemacs-mode-map (kbd "q") #'treemacs-quit)
+    (define-key treemacs-mode-map (kbd "C-x C-j") #'treemacs-quit))
 
   (global-set-key (kbd "C-x C-j") 'my-treemacs-jump)
   (global-set-key (kbd "M-0") 'treemacs-select-window)
